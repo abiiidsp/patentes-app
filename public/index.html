@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Consulta de Patente Argentina</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #f1f5f9;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 820px; margin: 0 auto; }
+  header { text-align: center; padding: 32px 0; }
+  h1 {
+    font-size: 2rem;
+    background: linear-gradient(90deg, #38bdf8, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header p { color: #94a3b8; margin-top: 8px; }
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .search-box { display: flex; gap: 10px; flex-wrap: wrap; }
+  input[type="text"] {
+    flex: 1; min-width: 200px;
+    padding: 14px 18px;
+    font-size: 1.3rem;
+    font-family: monospace;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: #0f172a;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    color: #f1f5f9;
+    outline: none;
+  }
+  input[type="text"]:focus { border-color: #38bdf8; }
+  button {
+    padding: 14px 24px;
+    font-size: 1rem; font-weight: 600;
+    background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    color: #0f172a;
+    border: none; border-radius: 10px;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .hint { color: #94a3b8; font-size: 0.85rem; margin-top: 8px; }
+  .error {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    padding: 14px; border-radius: 10px;
+    color: #fca5a5; margin-top: 14px;
+    display: none;
+  }
+  .error.visible { display: block; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .info-item {
+    background: #0f172a;
+    padding: 14px; border-radius: 8px;
+    border-left: 3px solid #38bdf8;
+  }
+  .info-item .label {
+    color: #94a3b8; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .info-item .value { font-size: 1.05rem; font-weight: 600; }
+  .loader { display: none; text-align: center; padding: 20px; color: #94a3b8; }
+  .loader.visible { display: block; }
+  .spinner {
+    display: inline-block; width: 22px; height: 22px;
+    border: 3px solid #334155; border-top-color: #38bdf8;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    vertical-align: middle; margin-right: 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  h2 { font-size: 1.2rem; margin-bottom: 14px; }
+  .results { display: none; }
+  .results.visible { display: block; }
+  .warning {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: #fcd34d;
+    padding: 12px; border-radius: 8px;
+    font-size: 0.85rem; margin-top: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🚗 Consulta de Patente</h1>
+    <p>Ingresá un dominio argentino y obtené los datos del vehículo</p>
+  </header>
+
+  <div class="card">
+    <div class="search-box">
+      <input type="text" id="patente" placeholder="AA123BB o ABC123" maxlength="7" autocomplete="off" />
+      <button id="btn" onclick="consultar()">Consultar</button>
+    </div>
+    <p class="hint">Formatos: <b>AA123BB</b> (Mercosur) o <b>ABC123</b> (anterior).</p>
+    <div class="error" id="error"></div>
+  </div>
+
+  <div class="loader" id="loader">
+    <span class="spinner"></span>Consultando...
+  </div>
+
+  <div class="results" id="results">
+    <div class="card">
+      <h2>Datos del vehículo</h2>
+      <div class="info-grid" id="datos"></div>
+      <div class="warning" id="warning" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
