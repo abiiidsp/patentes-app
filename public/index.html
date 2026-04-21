@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Consulta de Patente Argentina</title>
+<title>InformeAuto - Consulta tu patente</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -13,22 +13,23 @@
     min-height: 100vh;
     padding: 20px;
   }
-  .container { max-width: 820px; margin: 0 auto; }
+  .container { max-width: 960px; margin: 0 auto; }
   header { text-align: center; padding: 32px 0; }
   h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
     background: linear-gradient(90deg, #38bdf8, #a78bfa);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  header p { color: #94a3b8; margin-top: 8px; }
+  header p { color: #94a3b8; margin-top: 8px; font-size: 1rem; }
   .card {
     background: #1e293b;
     border: 1px solid #334155;
     border-radius: 14px;
     padding: 24px;
     margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   }
   .search-box { display: flex; gap: 10px; flex-wrap: wrap; }
   input[type="text"] {
@@ -52,8 +53,10 @@
     color: #0f172a;
     border: none; border-radius: 10px;
     cursor: pointer;
+    transition: transform 0.1s;
   }
-  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button:hover { transform: translateY(-1px); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   .hint { color: #94a3b8; font-size: 0.85rem; margin-top: 8px; }
   .error {
     background: rgba(239,68,68,0.1);
@@ -79,32 +82,98 @@
     margin-bottom: 4px;
   }
   .info-item .value { font-size: 1.05rem; font-weight: 600; }
-  .loader { display: none; text-align: center; padding: 20px; color: #94a3b8; }
-  .loader.visible { display: block; }
-  .spinner {
-    display: inline-block; width: 22px; height: 22px;
-    border: 3px solid #334155; border-top-color: #38bdf8;
-    border-radius: 50%; animation: spin 0.8s linear infinite;
-    vertical-align: middle; margin-right: 10px;
+  h2 {
+    font-size: 1.25rem; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  h2 { font-size: 1.2rem; margin-bottom: 14px; }
+  h2 .badge {
+    background: #334155; color: #94a3b8;
+    font-size: 0.7rem; font-weight: 500;
+    padding: 3px 10px; border-radius: 12px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .section-desc {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
   .results { display: none; }
   .results.visible { display: block; }
-  .warning {
-    background: rgba(245,158,11,0.1);
-    border: 1px solid rgba(245,158,11,0.3);
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .link-btn {
+    display: block;
+    padding: 16px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #f1f5f9;
+    text-decoration: none;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .link-btn:hover {
+    border-color: #38bdf8;
+    background: #172033;
+    transform: translateY(-2px);
+  }
+  .link-btn .title {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #38bdf8;
+    font-size: 0.95rem;
+  }
+  .link-btn .desc {
+    font-size: 0.82rem;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #22c55e;
+    color: #0f172a;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(34,197,94,0.4);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+  .toast.visible {
+    transform: translateX(-50%) translateY(0);
+  }
+  footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.8rem;
+    padding: 30px 0 10px 0;
+    line-height: 1.5;
+  }
+  footer a { color: #38bdf8; text-decoration: none; }
+  .disclaimer {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    padding: 14px;
+    border-radius: 10px;
     color: #fcd34d;
-    padding: 12px; border-radius: 8px;
-    font-size: 0.85rem; margin-top: 14px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-top: 16px;
   }
 </style>
 </head>
 <body>
 <div class="container">
+
   <header>
-    <h1>🚗 Consulta de Patente</h1>
-    <p>Ingresá un dominio argentino y obtené los datos del vehículo</p>
+    <h1>🚗 InformeAuto</h1>
+    <p>Consultá toda la información pública de tu vehículo en un solo lugar</p>
   </header>
 
   <div class="card">
@@ -116,18 +185,33 @@
     <div class="error" id="error"></div>
   </div>
 
-  <div class="loader" id="loader">
-    <span class="spinner"></span>Consultando...
+  <div class="results" id="results">
+
+    <div class="card">
+      <h2>Datos del dominio <span class="badge" id="formatoBadge"></span></h2>
+      <p class="section-desc">Información que se puede deducir del número de patente.</p>
+      <div class="info-grid" id="datos"></div>
+    </div>
+
+    <div class="card">
+      <h2>🏛️ Consultas oficiales</h2>
+      <p class="section-desc">Hacé clic en cualquier consulta para abrir el portal oficial. <b>La patente se copia automáticamente</b> al portapapeles para que la pegues con Ctrl+V.</p>
+      <div class="links-grid" id="links"></div>
+      <div class="disclaimer">
+        ⚠ <b>Importante</b>: los datos del titular, prendas, embargos y denuncia de robo solo los provee la <b>DNRPA</b> mediante el Informe de Dominio oficial (trámite pago). Esta herramienta consolida los canales gratuitos disponibles para el ciudadano.
+      </div>
+    </div>
+
   </div>
 
-  <div class="results" id="results">
-    <div class="card">
-      <h2>Datos del vehículo</h2>
-      <div class="info-grid" id="datos"></div>
-      <div class="warning" id="warning" style="display:none"></div>
-    </div>
-  </div>
+  <footer>
+    InformeAuto · Consolida acceso a portales oficiales · Sin almacenamiento de datos personales<br>
+    Hecho en Argentina 🇦🇷
+  </footer>
+
 </div>
+
+<div class="toast" id="toast">Patente copiada al portapapeles ✓</div>
 
 <script src="app.js"></script>
 </body>
