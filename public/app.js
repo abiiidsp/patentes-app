@@ -1,5 +1,6 @@
 // ============================================
-// INFORMEAUTO - Frontend con deep-links
+// INFORMEAUTO - Frontend
+// URLs verificados por el usuario - abril 2026
 // ============================================
 
 const input = document.getElementById('patente');
@@ -75,63 +76,48 @@ function renderLinks(patente) {
   const links = [
     {
       title: '💰 AGIP — Patente CABA',
-      desc: 'Deuda y cuotas del impuesto patente para vehículos radicados en Ciudad de Buenos Aires.',
+      desc: 'Pegá la patente con Ctrl+V. Consultá deuda y cuotas del impuesto patente en Ciudad de Buenos Aires.',
       url: 'https://lb.agip.gob.ar/ConsultaPat/'
     },
     {
-      title: '💰 ARBA — Patente Pcia. Bs. As.',
-      desc: 'Impuesto automotor para vehículos radicados en Provincia de Buenos Aires.',
-      url: 'https://www.arba.gov.ar/Apartados/Verautomotores.asp?Op=cuentas'
+      title: '💰 ARBA — Deuda Automotor PBA',
+      desc: 'Pegá la patente y resolvé el captcha. Impuesto automotor en Provincia de Buenos Aires.',
+      url: 'https://app.arba.gov.ar/AvisoDeudas/?imp=1'
     },
     {
       title: '🚦 Infracciones CABA',
-      desc: 'Consultar multas de tránsito en Ciudad de Buenos Aires.',
-      url: 'https://www.buenosaires.gob.ar/tramites/consulta-de-infracciones-de-transito'
+      desc: 'Seleccioná "Una patente", pegá el dominio y tildá "No soy robot". Multas de tránsito en CABA.',
+      url: 'https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/?actas=transito'
     },
     {
-      title: '🚦 Infracciones PBA',
-      desc: 'Consultar multas en Provincia de Buenos Aires.',
-      url: 'https://www.mseg.gba.gov.ar/mjysseg/infracciones/'
+      title: '🚦 Infracciones Provincia Bs. As.',
+      desc: 'Consultá multas de tránsito bonaerenses ingresando el dominio del vehículo.',
+      url: 'https://infraccionesba.gba.gob.ar/consulta-infraccion'
     },
     {
-      title: '🚦 Infracciones Nacionales',
-      desc: 'Sistema Nacional de Infracciones (ANSV) — rutas y jurisdicción federal.',
-      url: 'https://www.argentina.gob.ar/seguridadvial/consulta-infracciones'
+      title: '🚦 Infracciones Nacionales (ANSV)',
+      desc: 'Consulta nacional de infracciones: rutas y jurisdicciones adheridas al SINAI.',
+      url: 'https://consultainfracciones.seguridadvial.gob.ar/'
+    },
+    {
+      title: '🔧 VTV CABA',
+      desc: 'Información y trámites de Verificación Técnica Vehicular en Ciudad de Buenos Aires.',
+      url: 'https://buenosaires.gob.ar/gcaba_historico/tramites/verificacion-tecnica-vehicular-obligatoria'
     },
     {
       title: '🔧 VTV Provincia Bs. As.',
-      desc: 'Turnos y consulta de Verificación Técnica Vehicular bonaerense.',
+      desc: 'Portal oficial VTV bonaerense: turnos, plantas habilitadas y consulta de vigencia.',
       url: 'https://vtv.gba.gob.ar/'
     },
     {
-      title: '🔧 VTV CABA (SACTA)',
-      desc: 'Verificación Técnica Vehicular en Ciudad de Buenos Aires.',
-      url: 'https://www.buenosaires.gob.ar/tramites/verificacion-tecnica-vehicular-vtv'
+      title: '🏛️ DNRPA — Radicación por patente',
+      desc: 'Consultar dónde está radicado el vehículo (registro seccional) ingresando el dominio.',
+      url: 'https://www.dnrpa.gov.ar/portal_dnrpa/radicacion2.php'
     },
     {
-      title: '🏛️ DNRPA — Radicación',
-      desc: 'Consultar dónde está radicado el vehículo (registro seccional).',
-      url: 'https://www2.jus.gov.ar/dnrpa-site/#!/radicacion'
-    },
-    {
-      title: '🚨 Consulta de robo / pedido de secuestro',
-      desc: 'Verificar si el dominio figura con denuncia de robo, hurto o pedido de secuestro.',
-      url: 'https://www2.jus.gov.ar/dnrpa-site/#!/pedidosecuestro'
-    },
-    {
-      title: '📄 DNRPA — Informe oficial de dominio',
-      desc: 'Trámite pago: titular, prendas, embargos, denuncias. Es el informe legal completo.',
-      url: 'https://www.dnrpa.gov.ar/portal_dnrpa/informes.php'
-    },
-    {
-      title: '🆔 Mi Argentina',
-      desc: 'Si sos el titular, accedé al historial completo y la cédula digital.',
-      url: 'https://www.argentina.gob.ar/consultar-donde-esta-radicado-un-vehiculo'
-    },
-    {
-      title: '📋 CNRT (transporte)',
-      desc: 'Vehículos de transporte de carga, pasajeros, taxis y remises.',
-      url: 'https://www.argentina.gob.ar/cnrt'
+      title: '📄 Informe oficial de dominio',
+      desc: 'Trámite pago del Estado: titular, prendas, embargos y denuncias. Único informe legal completo.',
+      url: 'https://www.argentina.gob.ar/servicio/solicitar-un-informe-de-dominio-del-automotor'
     }
   ];
 
@@ -172,11 +158,9 @@ function consultar() {
   renderLinks(patente);
   results.classList.add('visible');
 
-  // Copiamos la patente al portapapeles preventivamente
   navigator.clipboard?.writeText(patente).then(() => {
     mostrarToast(`Patente ${patente} copiada`);
   }).catch(() => {});
 
-  // Scroll suave a los resultados
   results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
